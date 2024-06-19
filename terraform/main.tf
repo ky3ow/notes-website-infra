@@ -113,6 +113,53 @@ resource "azurerm_dns_a_record" "wwwredirect" {
    ]
 }
 
+resource "azurerm_network_security_group" "blog" {
+   name = "blog-nsg"
+   resource_group_name = azurerm_resource_group.blog.name
+   location = azurerm_resource_group.blog.location
+
+   security_rule {
+      name = "HTTP"
+      priority = 1001
+      direction = "Inbound"
+      access = "Allow"
+      protocol = "Tcp"
+      source_port_range = "*"
+      destination_port_range = "80"
+      source_address_prefix = "*"
+      destination_address_prefix = "*"
+   }
+
+   security_rule {
+      name = "HTTPS"
+      priority = 1002
+      direction = "Inbound"
+      access = "Allow"
+      protocol = "Tcp"
+      source_port_range = "*"
+      destination_port_range = "443"
+      source_address_prefix = "*"
+      destination_address_prefix = "*"
+   }
+
+   security_rule {
+      name = "SSH"
+      priority = 1003
+      direction = "Inbound"
+      access = "Allow"
+      protocol = "Tcp"
+      source_port_range = "*"
+      destination_port_range = "22"
+      source_address_prefix = var.ssh_source_address_prefix
+      destination_address_prefix = "*"
+   }
+}
+
+resource "azurerm_subnet_network_security_group_association" "blog" {
+   subnet_id = azurerm_subnet.blogsubnet.id
+   network_security_group_id = azurerm_network_security_group.blog.id
+}
+
 output "vm_ips" {
    value = azurerm_linux_virtual_machine.blogvm.public_ip_address
 }
