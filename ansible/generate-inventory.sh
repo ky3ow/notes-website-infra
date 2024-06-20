@@ -2,7 +2,7 @@
 
 echo "Generating inventory.ini for Ansible.."
 
-vm_ip=$(terraform output vm_ips 2>/dev/null | tr -d '"')
+vm_ip=$(terraform -chdir="../terraform/" output vm_ips 2>/dev/null | tr -d '"')
 
 if [ $? -ne 0 ]; then
 		echo "Error: Failed to retrieve VM IPs from Terraform"
