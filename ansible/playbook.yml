@@ -1,0 +1,9 @@
+---
+- name: Setup services
+  hosts: azure
+  become: yes
+
+  roles: 
+    - role: docker
+    - role: nginx
+      tags: nginx_tag

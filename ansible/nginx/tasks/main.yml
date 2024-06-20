@@ -1,0 +1,36 @@
+---
+- name: Copy docker compose file for Nginx
+  copy:
+    src: docker-compose.yml
+    dest: /opt/docker/nginx/
+
+- name: Copy nginx.conf
+  template:
+    src: nginx.conf.j2
+    dest: /opt/docker/nginx/nginx.conf
+
+- name: Cleanup nginx
+  community.docker.docker_compose:
+    project_src: /opt/docker/nginx
+    state: absent
+
+- name: Setup Nginx
+  community.docker.docker_compose:
+    project_src: /opt/docker/nginx
+    state: present
+
+- name: Ensure firewall is enabled
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: Open http and https ports
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  with_items:
+    - http
+    - https

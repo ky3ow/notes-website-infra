@@ -1,0 +1,40 @@
+---
+- name: Install docker dependencies
+  package:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+    state: present
+
+- name: Add docker repository
+  yum_repository:
+    name: docker-ce-stable
+    description: Docker CE Stable
+    baseurl: https://download.docker.com/linux/rhel/8/$basearch/stable
+    gpgcheck: true
+    gpgkey: https://download.docker.com/linux/rhel/gpg
+
+- name: Install Docker
+  package: 
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+
+- name: Start and enable Docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Install Docker SDK for Python
+  pip:
+    name: 
+      - docker
+      - docker-compose
+    state: present
+    executable: pip3
