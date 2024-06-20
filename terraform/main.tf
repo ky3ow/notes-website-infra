@@ -88,31 +88,6 @@ resource "azurerm_linux_virtual_machine" "blogvm" {
    custom_data = base64encode(file("${path.module}/cloud-init.cfg"))
 }
 
-resource "azurerm_dns_zone" "ky3owxyz" {
-   name = "ky3ow.xyz"
-   resource_group_name = azurerm_resource_group.blog.name
-}
-
-resource "azurerm_dns_a_record" "mainrecord" {
-   name = "@"
-   resource_group_name = azurerm_resource_group.blog.name
-   zone_name = azurerm_dns_zone.ky3owxyz.name
-   ttl = "3600"
-   records = [
-      azurerm_public_ip.blogip.ip_address
-   ]
-}
-
-resource "azurerm_dns_a_record" "wwwredirect" {
-   name = "www"
-   resource_group_name = azurerm_resource_group.blog.name
-   zone_name = azurerm_dns_zone.ky3owxyz.name
-   ttl = "3600"
-   records = [
-      azurerm_public_ip.blogip.ip_address
-   ]
-}
-
 resource "azurerm_network_security_group" "blog" {
    name = "blog-nsg"
    resource_group_name = azurerm_resource_group.blog.name
@@ -159,6 +134,32 @@ resource "azurerm_subnet_network_security_group_association" "blog" {
    subnet_id = azurerm_subnet.blogsubnet.id
    network_security_group_id = azurerm_network_security_group.blog.id
 }
+
+resource "azurerm_dns_zone" "ky3owxyz" {
+   name = "ky3ow.xyz"
+   resource_group_name = azurerm_resource_group.blog.name
+}
+
+resource "azurerm_dns_a_record" "mainrecord" {
+   name = "@"
+   resource_group_name = azurerm_resource_group.blog.name
+   zone_name = azurerm_dns_zone.ky3owxyz.name
+   ttl = "3600"
+   records = [
+      azurerm_linux_virtual_machine.blogvm.public_ip_address
+   ]
+}
+
+resource "azurerm_dns_a_record" "wwwredirect" {
+   name = "www"
+   resource_group_name = azurerm_resource_group.blog.name
+   zone_name = azurerm_dns_zone.ky3owxyz.name
+   ttl = "3600"
+   records = [
+      azurerm_linux_virtual_machine.blogvm.public_ip_address
+   ]
+}
+
 
 output "vm_ips" {
    value = azurerm_linux_virtual_machine.blogvm.public_ip_address
