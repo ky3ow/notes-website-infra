@@ -1,24 +1,4 @@
 ---
-- name: Copy docker compose file for Nginx
-  copy:
-    src: docker-compose.yml
-    dest: /opt/docker/nginx/
-
-- name: Copy nginx.conf
-  template:
-    src: nginx.conf.j2
-    dest: /opt/docker/nginx/nginx.conf
-
-- name: Cleanup nginx
-  community.docker.docker_compose:
-    project_src: /opt/docker/nginx
-    state: absent
-
-- name: Setup Nginx
-  community.docker.docker_compose:
-    project_src: /opt/docker/nginx
-    state: present
-
 - name: Ensure firewall is enabled
   service:
     name: firewalld
@@ -34,3 +14,55 @@
   with_items:
     - http
     - https
+
+- name: Install rpm signature key for EPEL
+  rpm_key:
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8
+    state: present
+
+- name: Install EPEL repo
+  package:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    state: present
+
+- name: Install nginx and certbot
+  package: 
+    name: 
+      - nginx
+      - certbot
+      - python3-certbot-nginx
+    state: present
+
+- name: Start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Configure nginx
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf 
+
+- name: Obtain SSL certificate
+  command: >
+    certbot --nginx 
+    -d {{ domain }} -d www.{{ domain }}
+    --non-interactive --agree-tos --email {{ email }}
+  args:
+    creates: /etc/letsencrypt/live/{{ domain }}
+  notify: reload nginx
+
+- name: Create post renewal hook
+  copy:
+    dest: /etc/letsencrypt/renewal-hooks/post/nginx-reload.sh
+    content: |
+      #!/bin/sh
+      systemctl reload nginx
+    mode: '0755'
+
+- name: Enable SSL renewal
+  service:
+    name: certbot-renew
+    state: started
+    enabled: yes

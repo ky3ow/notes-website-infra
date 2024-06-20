@@ -6,7 +6,7 @@ http {
 		server {
 				listen 80;
 
-				server_name {{ site_domain }};
+				server_name {{ domain }} www.{{ domain }};
 
 				location / {
 						root /usr/share/nginx/html;
