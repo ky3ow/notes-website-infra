@@ -63,6 +63,6 @@
 
 - name: Enable SSL renewal
   service:
-    name: certbot-renew
+    name: certbot-renew.timer
     state: started
     enabled: yes
