@@ -3,6 +3,14 @@
   hosts: azure
   become: yes
 
+  vars:
+    java_packages:
+      - java-17-openjdk
+    jenkins_plugins:
+      - git
+      - workflow-aggregator
+      - docker-workflow
+
   roles: 
     - role: prerequisites
       tags: prerequisites_tag
@@ -10,5 +18,7 @@
       tags: docker_tag
     - role: nginx
       tags: nginx_tag
-    - role: jenkins
+    - role: geerlingguy.java
+      tags: java_tag
+    - role: geerlingguy.jenkins
       tags: jenkins_tag
