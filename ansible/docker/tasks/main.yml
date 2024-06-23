@@ -2,7 +2,6 @@
 - name: Install docker dependencies
   package:
     name:
-      - yum-utils
       - device-mapper-persistent-data
       - lvm2
     state: present
@@ -25,12 +24,6 @@
       - docker-compose-plugin
     state: present
 
-- name: Start and enable Docker service
-  service:
-    name: docker
-    state: started
-    enabled: yes
-
 - name: Install Docker SDK for Python
   pip:
     name: 
@@ -38,3 +31,4 @@
       - docker-compose
     state: present
     executable: pip3
+  notify: start docker

@@ -1,0 +1,20 @@
+---
+- name: Install rpm signature key for EPEL
+  rpm_key:
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8
+    state: present
+
+- name: Install EPEL repo
+  package:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    state: present
+
+- name: Install nginx and certbot
+  package: 
+    name: 
+      - nginx
+      - certbot
+      - python3-certbot-nginx
+    state: present
+  notify: start nginx
+

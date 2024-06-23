@@ -1,0 +1,12 @@
+---
+- name: Install essentials
+  package:
+    name: 
+      - yum-utils
+      - git
+
+- name: Ensure firewall is enabled
+  service:
+    name: firewalld
+    state: started
+    enabled: yes

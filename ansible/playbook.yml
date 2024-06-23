@@ -4,6 +4,11 @@
   become: yes
 
   roles: 
+    - role: prerequisites
+      tags: prerequisites_tag
     - role: docker
+      tags: docker_tag
     - role: nginx
       tags: nginx_tag
+    - role: jenkins
+      tags: jenkins_tag
