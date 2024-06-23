@@ -16,5 +16,9 @@
       - certbot
       - python3-certbot-nginx
     state: present
-  notify: start nginx
 
+- name: Start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes

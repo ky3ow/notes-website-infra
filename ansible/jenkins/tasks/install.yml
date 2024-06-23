@@ -1,0 +1,26 @@
+---
+- name: Add Jenkins repository
+  yum_repository:
+    name: Jenkins-stabler
+    description: Jenkins LTS stable
+    baseurl: http://pkg.jenkins.io/redhat-stable
+    gpgcheck: true
+    gpgkey: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+- name: Install Jenkins dependencies
+  package:
+    name:
+      - java-17-openjdk
+      - fontconfig
+    state: present
+
+- name: Install Jenkins
+  package:
+    name: jenkins
+    state: present
+
+- name: Start Jenkins
+  service:
+    name: jenkins
+    state: started
+    enabled: yes

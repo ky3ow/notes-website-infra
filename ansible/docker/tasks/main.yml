@@ -31,4 +31,10 @@
       - docker-compose
     state: present
     executable: pip3
-  notify: start docker
+
+- name: Start Docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
