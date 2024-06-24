@@ -174,6 +174,15 @@ resource "azurerm_dns_a_record" "wwwredirect" {
    ]
 }
 
+resource "azurerm_dns_a_record" "jenkins" {
+   name = "jenkins"
+   resource_group_name = azurerm_resource_group.blog.name
+   zone_name = azurerm_dns_zone.ky3owxyz.name
+   ttl = "3600"
+   records = [
+      azurerm_linux_virtual_machine.blogvm.public_ip_address
+   ]
+}
 
 output "vm_ips" {
    value = azurerm_linux_virtual_machine.blogvm.public_ip_address
