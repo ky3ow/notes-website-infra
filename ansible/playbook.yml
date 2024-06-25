@@ -4,6 +4,8 @@
   become: yes
 
   vars:
+    domain: ky3ow.xyz
+    email: vova2341591@gmail.com
     java_packages:
       - java-17-openjdk
     jenkins_plugins:
