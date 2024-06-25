@@ -65,10 +65,3 @@
 
 # Update Jenkins and install configured plugins.
 - include_tasks: plugins.yml
-
-- name: Open firewall port 8080
-  firewalld:
-    port: 8080/tcp
-    state: enabled
-    permanent: true
-    immediate: true

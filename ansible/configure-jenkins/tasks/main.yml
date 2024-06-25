@@ -1,0 +1,14 @@
+---
+- name: Ensure user nginx is in jenkins group
+  user:
+    name: nginx
+    groups: jenkins
+    append: yes
+
+- name: Ensure jenkins CASC is configured
+  template:
+    src: jenkins.yaml.j2
+    dest: "{{ jenkins_home }}/jenkins.yaml"
+    owner: jenkins
+    group: jenkins
+  notify: restart jenkins

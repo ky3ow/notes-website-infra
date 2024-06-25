@@ -10,6 +10,7 @@
       - git
       - workflow-aggregator
       - docker-workflow
+      - configuration-as-code
 
   roles: 
     - role: prerequisites
@@ -22,3 +23,5 @@
       tags: java_tag
     - role: geerlingguy.jenkins
       tags: jenkins_tag
+    - role: configure-jenkins
+      tags: configure_jenkins_tag

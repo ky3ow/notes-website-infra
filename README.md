@@ -7,5 +7,5 @@ terraform apply -auto-approve
 ```bash
 ./generate-inventory.sh
 
-ansible-playbook -i inventory.ini playbook.yml
+ansible-playbook -i inventory.ini playbook.yml -e "jenkins_admin_password=<ADMIN PASSWORD>"
 ```
