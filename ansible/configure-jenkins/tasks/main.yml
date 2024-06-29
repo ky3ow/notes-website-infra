@@ -5,6 +5,41 @@
     groups: jenkins
     append: yes
 
+- name: Ensure folder /run/secrets exists
+  file:
+    path: /run/secrets
+    state: directory
+
+- name: Ensure file secrets.properties exists
+  copy:
+    dest: /run/secrets/secrets.properties
+    content: |
+      repo_access_token={{ repo_access_token }}
+    owner: jenkins
+    group: jenkins
+  no_log: true
+
+- name: Ensure jenkins .ssh directory exists
+  file:
+    path: "{{ jenkins_home }}/.ssh"
+    state: directory
+
+- name: Ensure github known hosts configured
+  copy:
+    src: github_known_hosts
+    dest: "{{ jenkins_home }}/.ssh/known_hosts"
+    owner: jenkins
+    group: jenkins
+
+- name: Ensure github private key is present
+  copy:
+    src: "~/.ssh/id_ed25519"
+    dest: "{{ jenkins_home }}/.ssh/github_key"
+    mode: '0600'
+    owner: jenkins
+    group: jenkins
+  no_log: true
+
 - name: Ensure jenkins CASC is configured
   template:
     src: jenkins.yaml.j2

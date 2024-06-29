@@ -2,19 +2,11 @@ pipeline {
     agent any
 
     stages {
-        stage('Test Stage 1') {
+        stage('Checkout git') {
             steps {
-                echo 'Hello, this is Stage 1!'
-            }
-        }
-        stage('Test Stage 2') {
-            steps {
-                echo 'Hello, this is Stage 2!'
-            }
-        }
-        stage('Test Stage 3') {
-            steps {
-                echo 'Hello, this is Stage 3!'
+                checkout scmGit(branches: [[name: '*/main']], 
+                                extensions: [cleanBeforeCheckout(deleteUntrackedNestedRepositories: true)],
+                                userRemoteConfigs: [[credentialsId: '[github-ssh-key]', url: 'git@github.com:ky3ow/logseq-notes.git']])
             }
         }
     }

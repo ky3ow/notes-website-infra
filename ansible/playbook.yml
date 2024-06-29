@@ -13,6 +13,8 @@
       - workflow-aggregator
       - docker-workflow
       - configuration-as-code
+      - github
+      - job-dsl
 
   roles: 
     - role: prerequisites

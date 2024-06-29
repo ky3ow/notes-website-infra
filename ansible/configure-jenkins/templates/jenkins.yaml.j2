@@ -1,6 +1,37 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - string:
+          description: "notes access token"
+          id: "[github-notes-token]"
+          scope: GLOBAL
+          secret: ${repo_access_token}
+      - basicSSHUserPrivateKey:
+          id: "[github-ssh-key]"
+          privateKeySource:
+            directEntry:
+              privateKey: "${readFile:{{ jenkins_home }}/.ssh/github_key}"
+          scope: GLOBAL
+          username: "ky3ow"
 jenkins:
   systemMessage: "Jenkins configured automatically by Jenkins CASC plugin\n\n"
 unclassified:
   location:
     adminAddress: "{{ email }}"
     url: "https://jenkins.{{ domain }}/"
+  gitHubPluginConfig:
+    configs:
+    - credentialsId: "[github-notes-token]"
+      name: "github"
+    hookUrl: "https://jenkins.{{ domain }}/github-webhook/"
+jobs:
+  - script: |
+      multibranchPipelineJob('notes-pipeline') {
+          branchSources {
+              git {
+                  id = 'notes'
+                  remote('https://github.com/ky3ow/notes-website-infra.git')
+              }
+          }
+      }
