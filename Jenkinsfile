@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('Checkout git') {
             steps {
+                deleteDir()
                 dir('notes') {
                     checkout scmGit(branches: [[name: '*/main']], 
                                     extensions: [cleanBeforeCheckout(deleteUntrackedNestedRepositories: true)],
@@ -11,5 +12,9 @@ pipeline {
                 }
             }
         }
+    }
+
+    triggers {
+        githubPush()
     }
 }
